@@ -15,6 +15,7 @@
 		1ADDF6F927E86BB600E8F3D9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1ADDF6F727E86BB600E8F3D9 /* LaunchScreen.storyboard */; };
 		1ADDF70127E86DE500E8F3D9 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADDF70027E86DE500E8F3D9 /* WebViewController.swift */; };
 		1AEBD11727F4370500169283 /* KycResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEBD11627F4370500169283 /* KycResponse.swift */; };
+		1AEBD11927F44BCF00169283 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEBD11827F44BCF00169283 /* ReportViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		1ADDF6FA27E86BB600E8F3D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1ADDF70027E86DE500E8F3D9 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		1AEBD11627F4370500169283 /* KycResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KycResponse.swift; sourceTree = "<group>"; };
+		1AEBD11827F44BCF00169283 /* ReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			children = (
 				1ADDF6F027E86BB400E8F3D9 /* ViewController.swift */,
 				1ADDF70027E86DE500E8F3D9 /* WebViewController.swift */,
+				1AEBD11827F44BCF00169283 /* ReportViewController.swift */,
 				1AEBD11627F4370500169283 /* KycResponse.swift */,
 				1ADDF70327E86DFF00E8F3D9 /* Resources */,
 				1ADDF6EC27E86BB400E8F3D9 /* AppDelegate.swift */,
@@ -154,6 +157,7 @@
 			files = (
 				1ADDF6F127E86BB400E8F3D9 /* ViewController.swift in Sources */,
 				1ADDF6ED27E86BB400E8F3D9 /* AppDelegate.swift in Sources */,
+				1AEBD11927F44BCF00169283 /* ReportViewController.swift in Sources */,
 				1ADDF6EF27E86BB400E8F3D9 /* SceneDelegate.swift in Sources */,
 				1ADDF70127E86DE500E8F3D9 /* WebViewController.swift in Sources */,
 				1AEBD11727F4370500169283 /* KycResponse.swift in Sources */,

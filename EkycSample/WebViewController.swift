@@ -62,6 +62,11 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
         switch kycResponse.result {
         case "success":
             NSLog("KYC 작업이 성공했습니다.")
+            if let reportVC = storyboard?.instantiateViewController(identifier: ReportViewController.storyboardID) as? ReportViewController {
+                reportVC.modalPresentationStyle = .pageSheet
+                reportVC.response = kycResponse
+                present(reportVC, animated: true, completion: nil)
+            }
         case "failed":
             NSLog("KYC가 작업이 실패했습니다.")
         case "complete":

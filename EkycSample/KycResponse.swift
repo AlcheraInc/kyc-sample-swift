@@ -17,7 +17,7 @@ struct Review_result: Codable {
     let phone_number: String
     let birthday: String
     let module: Module
-    let id_card: Id_card
+    let id_card: Id_card?
     let face_check: Face_check?
     let account: Account?
 }
