@@ -31,6 +31,7 @@ struct Module: Codable {
 }
 
 struct Id_card: Codable {
+    let modified: Bool
     let verified: Bool
     let id_card_image: Data
     let id_card_origin: Data

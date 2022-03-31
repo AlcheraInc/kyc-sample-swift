@@ -34,6 +34,8 @@ class ReportViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.title = "KYC Report"
     }
     
     override func viewDidLayoutSubviews() {

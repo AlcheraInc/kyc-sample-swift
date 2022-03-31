@@ -14,11 +14,14 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     
     var webView: WKWebView!
     private let responseName = "alcherakyc"
+    private var response: KycResponse?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "eKYC"
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         checkCameraPermission()
     }
     
@@ -42,39 +45,47 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     
     /* WebView 불러오기 */
     func loadWebView() {
-        //        guard let url = URL(string: "https://kyc.useb.co.kr/auth") else { return }
-        guard let url = URL(string: "https://kyc-int.useb.co.kr/auth") else { return }
+        guard let url = URL(string: "https://kyc.useb.co.kr/auth") else { return }
         let request = URLRequest(url: url)
         
         webView.load(request)
     }
     
+    /* KYC 결과 창으로 이동 */
+    func loadReportView() {
+        if let reportVC = storyboard?.instantiateViewController(identifier: ReportViewController.storyboardID) as? ReportViewController {
+            reportVC.response = response
+            navigationController?.pushViewController(reportVC, animated: true)
+        }
+    }
+    
     /* WebView 메시지 핸들러 */
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == responseName, let body = message.body as? String else { return }
-        guard let kycResponse = decodedPostMessage(body) else {
+        guard let decodedMessage = decodedPostMessage(body) else {
             NSLog("KYC 응답 메시지 분석에 실패했습니다.")
             return
         }
         
-        NSLog("KYC 응답 메시지 = \(kycResponse)")
+        NSLog("KYC 응답 메시지 = \(decodedMessage)")
+        guard let kycResponse = parsingJson(decodedMessage) else {
+            NSLog("KYC 응답 메시지 변환에 실패했습니다.")
+            return
+        }
         
         switch kycResponse.result {
         case "success":
             NSLog("KYC 작업이 성공했습니다.")
-            if let reportVC = storyboard?.instantiateViewController(identifier: ReportViewController.storyboardID) as? ReportViewController {
-                reportVC.modalPresentationStyle = .pageSheet
-                reportVC.response = kycResponse
-                present(reportVC, animated: true, completion: nil)
-            }
+            response = kycResponse
         case "failed":
             NSLog("KYC가 작업이 실패했습니다.")
+            response = kycResponse
         case "complete":
             NSLog("KYC가 완료되었습니다.")
-            navigationController?.popViewController(animated: true)
+            loadReportView()
         case "close":
             NSLog("KYC가 완료되지 않았습니다.")
-            navigationController?.popViewController(animated: true)
+            loadReportView()
         default:
             break
         }
@@ -111,15 +122,12 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     
     /* PostMessage로 보낼 고객 정보를 생성합니다. */
     func encodedPostMessage() -> String? {
-        let jsonData: [String: Any] = [
-            "customer_id": "12",
-            "id": "demoUser",
-            "key": "demoUser0000!",
-            "name": "김유림",
-            "birthday": "1993-05-12",
-            "phone_number": "01057652566",
-            "email": "email@mail.com"
-        ] as Dictionary
+        var jsonData: [String: Any] = KycParams.db_ocr
+        let customerData: [String: Any] = ["name": "김유림",
+                                           "birthday": "1993-05-12",
+                                           "phone_number": "01057652566",
+                                           "email": "email@mail.com"]
+        for (key, value) in customerData { jsonData[key] = value }
         
         do {
             // JSON -> encodeURIComponent -> Base64Encoding
@@ -136,16 +144,22 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     }
     
     /* KYC 수행 결과를 분석합니다. */
-    func decodedPostMessage(_ encodedMessage: String) -> KycResponse? {
+    func decodedPostMessage(_ encodedMessage: String) -> String? {
         // Base64Decoding -> decodeURIComponent -> JSON
         if let base64DecodedData = Data(base64Encoded: encodedMessage),
-           let base64DecodedString = String(data: base64DecodedData, encoding: .utf8),
-           let uriDecodedString = base64DecodedString.removingPercentEncoding {
-            if let uriDecodedData = uriDecodedString.data(using: .utf8) {
-                let decoder = JSONDecoder()
-                let response = try? decoder.decode(KycResponse.self, from: uriDecodedData)
-                return response
-            }
+           let base64DecodedString = String(data: base64DecodedData, encoding: .utf8) {
+           return base64DecodedString.removingPercentEncoding
+        }
+        
+        return nil
+    }
+    
+    /* Json을 KycResponse로 변환합니다. */
+    func parsingJson(_ jsonString: String) -> KycResponse? {
+        if let uriDecodedData = jsonString.data(using: .utf8) {
+            let decoder = JSONDecoder()
+            let response = try? decoder.decode(KycResponse.self, from: uriDecodedData)
+            return response
         }
         
         return nil
