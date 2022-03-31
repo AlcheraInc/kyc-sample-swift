@@ -51,3 +51,14 @@ struct Account: Codable {
     let finance_code: String?
     let account_number: String?
 }
+
+/* Json을 KycResponse로 변환합니다. */
+func parsingJson(_ jsonString: String) -> KycResponse? {
+    if let uriDecodedData = jsonString.data(using: .utf8) {
+        let decoder = JSONDecoder()
+        let response = try? decoder.decode(KycResponse.self, from: uriDecodedData)
+        return response
+    }
+    
+    return nil
+}

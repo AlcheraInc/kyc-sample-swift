@@ -15,7 +15,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     var webView: WKWebView!
     var customerData: [String: Any]? = nil
     private let responseName = "alcherakyc"
-    private var response: KycResponse?
+    private var result: String?
+    private var responseJson: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +56,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     /* KYC 결과 창으로 이동 */
     func loadReportView() {
         if let reportVC = storyboard?.instantiateViewController(identifier: ReportViewController.storyboardID) as? ReportViewController {
-            reportVC.response = response
+            reportVC.result = result
+            reportVC.responseJson = responseJson
             navigationController?.pushViewController(reportVC, animated: true)
         }
     }
@@ -68,26 +70,30 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
             return
         }
         
-        NSLog("KYC 응답 메시지 = \(decodedMessage)")
         guard let kycResponse = parsingJson(decodedMessage) else {
             NSLog("KYC 응답 메시지 변환에 실패했습니다.")
             return
         }
         
+        result = kycResponse.result
         switch kycResponse.result {
         case "success":
             NSLog("KYC 작업이 성공했습니다.")
-            response = kycResponse
+            responseJson = decodedMessage
         case "failed":
             NSLog("KYC가 작업이 실패했습니다.")
-            response = kycResponse
+            responseJson = decodedMessage
         case "complete":
             NSLog("KYC가 완료되었습니다.")
+            responseJson = responseJson ?? decodedMessage
             loadReportView()
         case "close":
             NSLog("KYC가 완료되지 않았습니다.")
+            responseJson = responseJson ?? decodedMessage
             loadReportView()
         default:
+            result = nil
+            responseJson = nil
             break
         }
     }
@@ -150,29 +156,6 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
            let base64DecodedString = String(data: base64DecodedData, encoding: .utf8) {
             let jsonString = base64DecodedString.removingPercentEncoding
             return jsonString
-        }
-        
-        return nil
-    }
-    
-    /* 줄간격 적용된 JSON */
-    func prettyPrintedJson(_ jsonString: String) -> String {
-        if let jsonData = jsonString.data(using: .utf8),
-           let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
-           let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted]),
-           let prettyString = String(data: prettyData, encoding: .utf8) {
-            return prettyString
-        }
-        
-        return jsonString
-    }
-    
-    /* Json을 KycResponse로 변환합니다. */
-    func parsingJson(_ jsonString: String) -> KycResponse? {
-        if let uriDecodedData = jsonString.data(using: .utf8) {
-            let decoder = JSONDecoder()
-            let response = try? decoder.decode(KycResponse.self, from: uriDecodedData)
-            return response
         }
         
         return nil

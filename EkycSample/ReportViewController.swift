@@ -9,8 +9,12 @@ import UIKit
 
 class ReportViewController: UIViewController {
     static let storyboardID = "reportView"
-    var response: KycResponse?
+    var result: String?
+    var responseJson: String?
     private let NOTAVAILABLE = "N/A"
+    
+    @IBOutlet weak var txtEvent: UITextView!
+    @IBOutlet weak var txtDetail: UITextView!
     
     @IBOutlet weak var idVerification: UIStackView!
     @IBOutlet weak var lblIdVerified: UILabel!
@@ -38,15 +42,37 @@ class ReportViewController: UIViewController {
         navigationItem.title = "KYC Report"
     }
     
+    /* 완료 버튼 클릭 */
+    @IBAction func doneButtonPressed(_ sender: UIBarButtonItem) {
+        navigationController?.popToRootViewController(animated: false)
+    }
+    
     override func viewDidLayoutSubviews() {
         idVerification.isHidden = true
         faceAuthentication.isHidden = true
         liveness.isHidden = true
         accountVerification.isHidden = true
         
-        guard let response = response,
+        txtEvent.layer.borderWidth = 1
+        txtEvent.layer.borderColor = UIColor.blue.cgColor
+        txtEvent.text = "result: \(result ?? "unknown")"
+        
+        if let jsonString = responseJson {
+            txtDetail.text = prettyPrintedJson(jsonString)
+            txtDetail.layer.borderWidth = 1
+            txtDetail.layer.borderColor = UIColor.blue.cgColor
+        }
+        
+        drawResponse()
+    }
+    
+    /* KYC 응답 Message 결과에 따라 표시 */
+    func drawResponse() {
+        guard let responseJson = responseJson,
+              let response = parsingJson(responseJson),
               let detail = response.review_result else { return }
         
+        // 신분증 진위 확인
         if detail.module.id_card_ocr, detail.module.id_card_verification {
             idVerification.isHidden = false
             if let id_card = detail.id_card {
@@ -58,6 +84,7 @@ class ReportViewController: UIViewController {
             }
         }
         
+        // 신분증 vs 셀피 유사도
         if detail.module.face_authentication {
             faceAuthentication.isHidden = false
             if let face_check = detail.face_check {
@@ -69,6 +96,7 @@ class ReportViewController: UIViewController {
             }
         }
         
+        // 얼굴 사진 진위 확인
         if detail.module.liveness {
             liveness.isHidden = false
             if let face_check = detail.face_check {
@@ -78,6 +106,7 @@ class ReportViewController: UIViewController {
             }
         }
         
+        // 1원 계좌 인증
         if detail.module.account_verification {
             accountVerification.isHidden = false
             if let account = detail.account {
@@ -90,5 +119,17 @@ class ReportViewController: UIViewController {
                 lblAccountVerification.text = NOTAVAILABLE
             }
         }
+    }
+    
+    /* 줄간격 적용된 JSON */
+    func prettyPrintedJson(_ jsonString: String) -> String {
+        if let jsonData = jsonString.data(using: .utf8),
+           let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+           let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted]),
+           let prettyString = String(data: prettyData, encoding: .utf8) {
+            return prettyString
+        }
+        
+        return jsonString
     }
 }
