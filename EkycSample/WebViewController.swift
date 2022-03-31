@@ -129,9 +129,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     
     /* PostMessage로 보낼 고객 정보를 생성합니다. */
     func encodedPostMessage() -> String? {
-        var jsonData: [String: Any] = KycParams.ocr
+        var jsonData: [String: Any] = KycParams.all
         if let customerData = customerData {
-            jsonData = KycParams.db_ocr
+            jsonData = KycParams.db_all
             for (key, value) in customerData { jsonData[key] = value }
         }
         

@@ -12,6 +12,7 @@ class ReportViewController: UIViewController {
     var result: String?
     var responseJson: String?
     private let NOTAVAILABLE = "N/A"
+    private let alcheraColor = UIColor(named: "alcheraColor")
     
     @IBOutlet weak var txtEvent: UITextView!
     @IBOutlet weak var txtDetail: UITextView!
@@ -54,13 +55,13 @@ class ReportViewController: UIViewController {
         accountVerification.isHidden = true
         
         txtEvent.layer.borderWidth = 1
-        txtEvent.layer.borderColor = UIColor.blue.cgColor
+        txtEvent.layer.borderColor = alcheraColor?.cgColor
         txtEvent.text = "result: \(result ?? "unknown")"
         
         if let jsonString = responseJson {
             txtDetail.text = prettyPrintedJson(jsonString)
             txtDetail.layer.borderWidth = 1
-            txtDetail.layer.borderColor = UIColor.blue.cgColor
+            txtDetail.layer.borderColor = alcheraColor?.cgColor
         }
         
         drawResponse()
@@ -77,6 +78,7 @@ class ReportViewController: UIViewController {
             idVerification.isHidden = false
             if let id_card = detail.id_card {
                 lblIdVerified.text = id_card.verified ? "성공" : "실패"
+                lblIdVerified.textColor = id_card.verified ? alcheraColor : .red
                 imgIdMasking.image = UIImage(data: id_card.id_card_image ?? Data())
                 imgIdOrigin.image = UIImage(data: id_card.id_card_origin ?? Data())
             } else {
@@ -89,6 +91,7 @@ class ReportViewController: UIViewController {
             faceAuthentication.isHidden = false
             if let face_check = detail.face_check {
                 lblSimilarity.text = face_check.is_same_person ? "높음" : "낮음"
+                lblSimilarity.textColor = face_check.is_same_person ? alcheraColor : .red
                 imgIdCrop.image = UIImage(data: detail.id_card?.id_crop_image ?? Data())
                 imgSelfie.image = UIImage(data: face_check.selfie_image ?? Data())
             } else {
@@ -101,6 +104,7 @@ class ReportViewController: UIViewController {
             liveness.isHidden = false
             if let face_check = detail.face_check {
                 lblLive.text = face_check.is_live ? "성공" : "실패"
+                lblLive.textColor = face_check.is_live ? alcheraColor : .red
             } else {
                 lblLive.text = NOTAVAILABLE
             }
@@ -111,6 +115,7 @@ class ReportViewController: UIViewController {
             accountVerification.isHidden = false
             if let account = detail.account {
                 lblAccountVerification.text = account.verified ? "성공" : "실패"
+                lblAccountVerification.textColor = account.verified ? alcheraColor : .red
                 lblAccountUser.text = account.user_name ?? NOTAVAILABLE
                 lblAccountFinance.text = account.finance_company ?? NOTAVAILABLE
                 lblFinanceCode.text = account.finance_code ?? NOTAVAILABLE
