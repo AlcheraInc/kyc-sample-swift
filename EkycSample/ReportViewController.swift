@@ -51,8 +51,8 @@ class ReportViewController: UIViewController {
             idVerification.isHidden = false
             if let id_card = detail.id_card {
                 lblIdVerified.text = id_card.verified ? "성공" : "실패"
-                imgIdMasking.image = UIImage(data: id_card.id_card_image)
-                imgIdOrigin.image = UIImage(data: id_card.id_card_origin)
+                imgIdMasking.image = UIImage(data: id_card.id_card_image ?? Data())
+                imgIdOrigin.image = UIImage(data: id_card.id_card_origin ?? Data())
             } else {
                 lblIdVerified.text = NOTAVAILABLE
             }
@@ -63,7 +63,7 @@ class ReportViewController: UIViewController {
             if let face_check = detail.face_check {
                 lblSimilarity.text = face_check.is_same_person ? "높음" : "낮음"
                 imgIdCrop.image = UIImage(data: detail.id_card?.id_crop_image ?? Data())
-                imgSelfie.image = UIImage(data: face_check.selfie_image)
+                imgSelfie.image = UIImage(data: face_check.selfie_image ?? Data())
             } else {
                 lblSimilarity.text = NOTAVAILABLE
             }

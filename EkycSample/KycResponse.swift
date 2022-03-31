@@ -33,15 +33,15 @@ struct Module: Codable {
 struct Id_card: Codable {
     let modified: Bool
     let verified: Bool
-    let id_card_image: Data
-    let id_card_origin: Data
-    let id_crop_image: Data
+    let id_card_image: Data?
+    let id_card_origin: Data?
+    let id_crop_image: Data?
 }
 
 struct Face_check: Codable {
     let is_same_person: Bool
     let is_live: Bool
-    let selfie_image: Data
+    let selfie_image: Data?
 }
 
 struct Account: Codable {

@@ -13,6 +13,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     static let storyboardID = "webView"
     
     var webView: WKWebView!
+    var customerData: [String: Any]? = nil
     private let responseName = "alcherakyc"
     private var response: KycResponse?
     
@@ -122,12 +123,11 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     
     /* PostMessage로 보낼 고객 정보를 생성합니다. */
     func encodedPostMessage() -> String? {
-        var jsonData: [String: Any] = KycParams.db_ocr
-        let customerData: [String: Any] = ["name": "김유림",
-                                           "birthday": "1993-05-12",
-                                           "phone_number": "01057652566",
-                                           "email": "email@mail.com"]
-        for (key, value) in customerData { jsonData[key] = value }
+        var jsonData: [String: Any] = KycParams.ocr
+        if let customerData = customerData {
+            jsonData = KycParams.db_ocr
+            for (key, value) in customerData { jsonData[key] = value }
+        }
         
         do {
             // JSON -> encodeURIComponent -> Base64Encoding
@@ -148,10 +148,23 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
         // Base64Decoding -> decodeURIComponent -> JSON
         if let base64DecodedData = Data(base64Encoded: encodedMessage),
            let base64DecodedString = String(data: base64DecodedData, encoding: .utf8) {
-           return base64DecodedString.removingPercentEncoding
+            let jsonString = base64DecodedString.removingPercentEncoding
+            return jsonString
         }
         
         return nil
+    }
+    
+    /* 줄간격 적용된 JSON */
+    func prettyPrintedJson(_ jsonString: String) -> String {
+        if let jsonData = jsonString.data(using: .utf8),
+           let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+           let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted]),
+           let prettyString = String(data: prettyData, encoding: .utf8) {
+            return prettyString
+        }
+        
+        return jsonString
     }
     
     /* Json을 KycResponse로 변환합니다. */
