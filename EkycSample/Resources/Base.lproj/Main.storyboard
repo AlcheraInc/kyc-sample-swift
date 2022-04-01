@@ -13,7 +13,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="EkycSample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="homeView" id="BYZ-38-t0r" customClass="ViewController" customModule="EkycSample" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -515,7 +515,7 @@
         <!--Navigation Controller-->
         <scene sceneID="B08-Zi-VEb">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="d5P-67-J1K" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="report" automaticallyAdjustsScrollViewInsets="NO" id="d5P-67-J1K" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Vhc-xj-w7L">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
