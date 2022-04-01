@@ -9,7 +9,9 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var txtName: UITextField!
-    @IBOutlet weak var txtBirthday: UITextField!
+    @IBOutlet weak var txtBirthYear: UITextField!
+    @IBOutlet weak var txtBirthMonth: UITextField!
+    @IBOutlet weak var txtBirthDay: UITextField!
     @IBOutlet weak var txtPhoneNumber: UITextField!
     @IBOutlet weak var txtEmail: UITextField!
     @IBOutlet weak var btnRun: UIButton!
@@ -19,7 +21,7 @@ class ViewController: UIViewController {
         
         btnRun.layer.cornerRadius = 20
         txtName.delegate = self
-        txtBirthday.delegate = self
+        txtBirthYear.delegate = self
         txtPhoneNumber.delegate = self
         txtEmail.delegate = self
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow),
@@ -35,11 +37,13 @@ class ViewController: UIViewController {
         }
         
         if let name = txtName.text, !name.isEmpty,
-           let birthday = txtBirthday.text, !birthday.isEmpty,
+           let year = txtBirthYear.text, !year.isEmpty,
+           let month = txtBirthMonth.text, !month.isEmpty,
+           let day = txtBirthDay.text, !day.isEmpty,
            let phoneNumber = txtPhoneNumber.text, !phoneNumber.isEmpty,
            let email = txtEmail.text, !email.isEmpty {
             let customerData: [String: Any] = ["name": name,
-                                               "birthday": birthday,
+                                               "birthday": "\(year)-\(month)-\(day)",
                                                "phone_number": phoneNumber,
                                                "email": email]
             webVC.customerData = customerData
