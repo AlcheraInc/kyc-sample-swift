@@ -30,6 +30,11 @@ class ViewController: UIViewController {
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = true
+    }
+    
     /* WebView 실행 */
     @IBAction func runButtonPressed(_ sender: UIButton) {
         guard let webVC = storyboard?.instantiateViewController(identifier: WebViewController.storyboardID) as? WebViewController else {

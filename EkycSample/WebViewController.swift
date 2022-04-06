@@ -24,7 +24,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         checkCameraPermission()
+        navigationController?.isNavigationBarHidden = false
     }
     
     /* View 불러오기 */

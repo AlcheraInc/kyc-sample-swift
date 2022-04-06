@@ -43,6 +43,11 @@ class ReportViewController: UIViewController {
         navigationItem.title = "KYC Report"
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = false
+    }
+    
     /* 완료 버튼 클릭 */
     @IBAction func doneButtonPressed(_ sender: UIBarButtonItem) {
         navigationController?.popToRootViewController(animated: false)
