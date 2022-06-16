@@ -64,6 +64,23 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler 
         }
     }
     
+    
+    /* webView Javascript Alert 처리 */
+    func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
+        let alertController = UIAlertController(title: message, message: nil, preferredStyle: .alert);
+               
+               let cancelAction = UIAlertAction(title: "확인", style: .cancel) {
+                   _ in completionHandler()
+               }
+               
+               alertController.addAction(cancelAction)
+               DispatchQueue.main.async {
+                   self.present(alertController, animated: true, completion: nil)
+               }
+       
+    }
+    
+    
     /* WebView 메시지 핸들러 */
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == responseName, let body = message.body as? String else { return }
